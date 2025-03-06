@@ -1,0 +1,16 @@
+{
+    "INVALID_REQUEST_BODY": "Invalid request body.",
+  
+    "LOGOUT_SUCCESS": "Logout successful.",
+    "LOGIN_SUCCESS": "User login successfully",
+  
+    "UNPROCESSED_ENTITY": "Unprocessed entity",
+    "NOT_FOUND": "Not found",
+    "UNRECOGNIZED_KEY": "Unrecognized key",
+    "EMPLOYEE_CREATED_SUCCESSFULLY": "Employee created successfully",
+    "VALIDATION_ERROR": "Validation error",
+    "EMPLOYEE_EMAIL_ALREADY_EXISTS": "Employee email already exists",
+    "EMPLOYEE_NAME_ALREADY_EXISTS": "Employee name already exists",
+    "EMPLOYEE_UPDATED_SUCCESSFULLY": "Employee updated successfully",
+    "EMPLOYEE_NOT_FOUND": "Employee not found"
+}  
