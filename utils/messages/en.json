@@ -12,5 +12,6 @@
     "EMPLOYEE_EMAIL_ALREADY_EXISTS": "Employee email already exists",
     "EMPLOYEE_NAME_ALREADY_EXISTS": "Employee name already exists",
     "EMPLOYEE_UPDATED_SUCCESSFULLY": "Employee updated successfully",
-    "EMPLOYEE_NOT_FOUND": "Employee not found"
+    "EMPLOYEE_NOT_FOUND": "Employee not found",
+    "PRODUCT_CONFIG_CREATED_SUCCESSFULLY": "Product config created successfully"
 }  

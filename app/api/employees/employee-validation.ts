@@ -4,6 +4,8 @@ import { roles } from "@/utils/enum";
 import ajv from "@/lib/ajv";
 import ajvInstance from "@/lib/ajv";
 import { Employee, UpdateEmployee } from "./employee-types";
+import { ProductConfig } from "../product-config/product-config.types";
+import pool from "@/lib/db";
 
 // type EmployeeInput = Omit<Employee, "id">; 
 
@@ -49,18 +51,98 @@ ajvInstance.addFormat("strong-password", {
   validate: (password: string) => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(password)
 });
 
-export const employeeSchema: JSONSchemaType<Employee> = {
-  type: "object",
-  properties: {
-    name: { type: "string", minLength: 4 },
-    email: { type: "string" },
-    role: { type: "string", enum: [...roles] },
-    is_active: { type: "boolean", nullable: true },
-    password: { type: "string" }
-  },
-  required: ["name", "email", "role", "password"],
-  additionalProperties: false
+// export const employeeSchema: JSONSchemaType<Employee> = {
+//   type: "object",
+//   properties: {
+//     name: { type: "string", minLength: 4 },
+//     email: { type: "string" },
+//     role: { type: "string", enum: [...roles] },
+//     is_active: { type: "boolean", nullable: true },
+//     password: { type: "string" }
+//   },
+//   required: ["name", "email", "role", "password"],
+//   additionalProperties: false
+// };
+
+// export const generateEmployeeSchema = async (): Promise<JSONSchemaType<Employee>> => {
+//   const result = await pool.query(`SELECT name, data_type, is_required FROM product_config`);
+//   const dynamicProperties: any = {};
+
+//   result.rows.forEach((field: ProductConfig) => {
+//       let type: any;
+
+//       switch (field.data_type) {
+//           case "string":
+//               type = "string";
+//               break;
+//           case "number":
+//               type = "integer";
+//               break;
+//           case "boolean":
+//               type = "boolean";
+//               break;
+//           default:
+//               throw new Error(`Unsupported data type: ${field.data_type}`);
+//       }
+
+//       dynamicProperties[field.name] = { type };
+//   });
+
+//   return {
+//       type: "object",
+//       properties: {
+//           name: { type: "string" },
+//           email: { type: "string" },
+//           role: { type: "string", enum: [...roles] },
+//           is_active: { type: "boolean", nullable: true },
+//           password: { type: "string" },
+//           ...dynamicProperties,
+//       },
+//       required: ["name", "email", "role", "password", ...result.rows.filter(f => f.is_required).map(f => f.name)],
+//       additionalProperties: false
+//   };
+// };
+
+export const generateEmployeeSchema = async (): Promise<JSONSchemaType<Employee>> => {
+  const result = await pool.query(`SELECT name, data_type, is_required FROM product_config`);
+  const dynamicProperties: any = {};
+
+  result.rows.forEach((field: ProductConfig) => {
+      let type: "string" | "integer" | "boolean";
+
+      switch (field.data_type) {
+          case "string":
+              type = "string";
+              break;
+          case "number":
+              type = "integer";
+              break;
+          case "boolean":
+              type = "boolean";
+              break;
+          default:
+              throw new Error(`Unsupported data type: ${field.data_type}`);
+      }
+
+      dynamicProperties[field.name] = { type };
+  });
+
+  return {
+      type: "object",
+      properties: {
+          name: { type: "string" },
+          email: { type: "string" }, // Enforce email format
+          role: { type: "string", enum: [...roles] },
+          is_active: { type: "boolean", nullable: true },
+          password: { type: "string", minLength: 6 }, // Enforce password length
+          ...dynamicProperties,
+      },
+      required: ["name", "email", "role", "password", ...result.rows.filter(f => f.is_required).map(f => f.name)],
+      additionalProperties: false
+  };
 };
+
+
 
 export const UpdateEmployeeSchema: JSONSchemaType<UpdateEmployee> = {
   type: "object",

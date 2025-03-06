@@ -91,3 +91,37 @@ export const updateEmployee =  async (
       throw new Error(`Error updating employee: ${error}`);
     }
 };
+
+export const alterEmployeesTable = async (columnName: string, dataType: string, isRequired: boolean) => {
+  try {
+      let columnType: string;
+
+      // Map data_type to PostgreSQL column types
+      switch (dataType) {
+          case "string":
+              columnType = "TEXT";
+              break;
+          case "number":
+              columnType = "INTEGER";
+              break;
+          case "boolean":
+              columnType = "BOOLEAN";
+              break;
+          case "date":
+              columnType = "TIMESTAMP";
+              break;
+          default:
+              throw new Error(`Unsupported data type: ${dataType}`);
+      }
+
+      // Construct the ALTER TABLE query
+      const alterQuery = `
+          ALTER TABLE employees 
+          ADD COLUMN "${columnName}" ${columnType} ${isRequired ? "NOT NULL" : "NULL"};
+      `;
+
+      await pool.query(alterQuery);
+  } catch (error) {
+      throw new Error(`Error altering employees table: ${error}`);
+  }
+};

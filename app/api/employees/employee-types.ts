@@ -4,7 +4,6 @@ import { JTDDataType } from "ajv/dist/jtd";
 // import { EmployeeSchema } from "./employee-validation";
 
 export type Employee = {
-  // id: string;
   name: string;
   email: string;
   role: (typeof roles)[number];
